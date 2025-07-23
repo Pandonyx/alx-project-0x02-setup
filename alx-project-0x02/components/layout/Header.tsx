@@ -5,15 +5,15 @@ const Header: React.FC = () => {
     <header className="bg-amber-300 text-black shadow-md py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
         <h3 className="font-bold text-2xl">
-     <Link href="/">NavBar</Link>
-  </h3>
+            <Link href="/">BrandName</Link>
+        </h3>
         <nav>
           <ul className="flex space-x-6">
             <li className="hover:underline">
-              <Link href="/posts">Posts</Link>
+              <Link href="/home">Home</Link>
             </li>
             <li className="hover:underline">
-              <Link href="/users">Users</Link>
+              <Link href="/about">About</Link>
             </li>
           </ul>
         </nav>
