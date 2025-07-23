@@ -1,42 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import PostCard from "@/components/common/PostCard";
+import type { PostProps } from "@/interfaces";
 import Header from "@/components/layout/Header";
-import Card from "@/components/common/Card";
-import { type Post } from "@/interfaces";
-import PostModal from "@/components/common/PostModal";
 
-export default function Posts() {
-     const [posts, setPosts] = useState<Post[]>([
-            { title: "First Post", content: "This is the first post." },
-            { title: "Second Post", content: "This is the second post." },
-            { title: "Third Post", content: "This is the third post." },
-            { title: "Fourth Post", content: "This is the fourth post." },
-        ]);
-        const [modalOpen, setModalOpen] = useState(false);
-    
-        // Handler to add a new post
-        const addPost = (data: Post) => {
-            setPosts([data, ...posts]);
-        };
+export default function PostsPage() {
+  const [posts, setPosts] = useState<PostProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch from JSONPlaceholder API
+    fetch("https://jsonplaceholder.typicode.com/posts?_limit=10")
+      .then(res => res.json())
+      .then((data) => {
+        // Map API response to PostProps
+        const mapped = data.map((item: any) => ({
+          title: item.title,
+          content: item.body,
+          userId: item.userId,
+        }));
+        setPosts(mapped);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div>
-      <Header />
-      <h1>Posts Page</h1>
-      <div className="p-8 flex flex-col items-center gap-4">
-            <button
-                className="mb-6 px-5 py-2 bg-amber-300 text-white rounded-lg hover:bg-amber-400"
-                onClick={() => setModalOpen(true)}> + Add Post
-            </button>
-        <div className="flex flex-wrap gap-4">
-                {posts.map((post, index) => (
-            <Card key={index} title={post.title} content={post.content} />
+        <Header />
+    
+    <div className="p-8">
+      <h1 className="item-center flex justify-center text-2xl font-bold mb-6">Posts</h1>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className=" flex flex-wrap gap-4 justify-center">
+          {posts.map((post, index) => (
+            <div key={index} className="w-full sm:w-[320px] sm:lg:w-[360px]" >
+            <PostCard
+              title={post.title}
+              content={post.content}
+              userId={post.userId}
+            />
+          </div>
           ))}
-            </div>
-            <PostModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onSubmit={addPost} />
-      </div>
+        </div>
+      )}
+    </div>
     </div>
   );
 }
